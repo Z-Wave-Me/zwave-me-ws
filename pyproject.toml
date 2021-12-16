@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "zwave_me_ws"
+version = "0.1.13"
+description = "Library, implementing websocket connection to ZWave-Me"
+authors = ["Dmitry Vlasov <kerbalspacema@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/Z-Wave-Me/zwave-me-ws"
+readme = 'README.md'
+
+[tool.poetry.dependencies]
+python = "^3.8"
+websocket-client = "^1.2.1"
+
+[tool.poetry.dev-dependencies]
+websocket-client = "^1.2.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
