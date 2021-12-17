@@ -45,6 +45,7 @@ class ZWaveMe:
 
     async def close_ws(self):
         self._ws.close()
+        self.thread.join()
 
     async def get_uuid(self):
         """Get uuid info"""
@@ -103,7 +104,7 @@ class ZWaveMe:
                 {
                     "event": "httpEncapsulatedRequest",
                     "responseEvent": "get_info",
-                    "data": {"method": "GET", "url": "/ZAutomation/api/v1/devices"}
+                    "data": {"method": "GET", "url": "/ZAutomation/api/v1/system/first-access"}
                 }
             )
         )
@@ -168,7 +169,7 @@ class ZWaveMe:
                             for device in devices_to_install:
                                 self.get_device_info(device)
                 elif dict_data["type"] == "get_info":
-                    uuid = json.loads(dict_data["data"]["body"]["data"]["uuid"])
+                    uuid = json.loads(dict_data["data"]["body"])["data"]["uuid"]
                     if uuid and uuid is not None:
                         self.uuid = uuid
             except Exception as e:
