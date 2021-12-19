@@ -22,7 +22,7 @@ class WebsocketListener(threading.Thread, websocket.WebSocketApp):
         websocket.WebSocketApp.__init__(
             self,
             url,
-            header={"Authorization": "Bearer " + token},
+            header={"Authorization": "Bearer " + token if token else ""},
             on_open=self.on_open,
             on_error=on_error,
             on_message=on_message,

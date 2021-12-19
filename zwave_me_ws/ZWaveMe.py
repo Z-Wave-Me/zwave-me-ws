@@ -10,7 +10,7 @@ import time
 class ZWaveMe:
     """Main controller class"""
 
-    def __init__(self, url, token, on_device_create=None,
+    def __init__(self, url, token=None, on_device_create=None,
                  on_device_update=None, on_new_device=None, platforms=None):
         self.on_device_create = on_device_create
         self.on_device_update = on_device_update
@@ -23,6 +23,7 @@ class ZWaveMe:
         self.thread = None
         self.devices = []
         self.uuid = None
+        self.is_closed = False
 
     def start_ws(self):
         self.thread = threading.Thread(target=self.init_websocket)
@@ -44,6 +45,7 @@ class ZWaveMe:
         return self.uuid
 
     async def close_ws(self):
+        self.is_closed = True
         self._ws.close()
         self.thread.join()
 
@@ -112,6 +114,8 @@ class ZWaveMe:
     def init_websocket(self):
         # keep websocket open indefinitely
         while True:
+            if self.is_closed:
+                return
             self._ws = WebsocketListener(
                 ZWaveMe=self,
                 on_message=self.on_message,
