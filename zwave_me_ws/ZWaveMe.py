@@ -32,7 +32,9 @@ class ZWaveMe:
 
     async def get_connection(self):
         """verify connection"""
-        self.start_ws()
+        loop = asyncio.get_event_loop()
+        loop.run_in_executor(None, self.start_ws)
+
         try:
             await asyncio.wait_for(self._ws.connect(), timeout=10.0)
             return True
@@ -45,13 +47,15 @@ class ZWaveMe:
         return self.uuid
 
     async def close_ws(self):
+        loop = asyncio.get_event_loop()
+        loop.run_in_executor(None, self._ws.close)
         self.is_closed = True
-        self._ws.close()
         self.thread.join()
 
     async def get_uuid(self):
         """Get uuid info"""
-        self.get_info()
+        loop = asyncio.get_event_loop()
+        loop.run_in_executor(None, self.get_info)
         try:
             await asyncio.wait_for(self.wait_for_info(), timeout=5.0)
             return self.uuid

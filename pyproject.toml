@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "zwave_me_ws"
-version = "0.1.17"
+version = "0.1.18"
 description = "Library, implementing websocket connection to ZWave-Me"
 authors = ["Dmitry Vlasov <kerbalspacema@gmail.com>"]
 license = "MIT"
