@@ -50,7 +50,7 @@ class ZWaveMe:
         loop = asyncio.get_event_loop()
         loop.run_in_executor(None, self._ws.close)
         self.is_closed = True
-        self.thread.join()
+        loop.run_in_executor(self.thread.join())
 
     async def get_uuid(self):
         """Get uuid info"""
