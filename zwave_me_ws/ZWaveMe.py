@@ -39,6 +39,7 @@ class ZWaveMe:
             await asyncio.wait_for(self._ws.connect(), timeout=10.0)
             return True
         except asyncio.TimeoutError:
+            await self.close_ws()
             return False
 
     async def wait_for_info(self):
