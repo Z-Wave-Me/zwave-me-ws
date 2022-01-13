@@ -26,6 +26,7 @@ class ZWaveMe:
         self.is_closed = False
 
     def start_ws(self):
+        """Launch thread."""
         self.thread = threading.Thread(target=self.init_websocket)
         self.thread.daemon = True
         self.thread.start()
@@ -38,6 +39,7 @@ class ZWaveMe:
         try:
             await asyncio.wait_for(self._ws.connect(), timeout=10.0)
             return True
+
         except asyncio.TimeoutError:
             await self.close_ws()
             return False
