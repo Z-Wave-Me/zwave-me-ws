@@ -34,7 +34,7 @@ class ZWaveMe:
     async def get_connection(self):
         """verify connection"""
         loop = asyncio.get_event_loop()
-        loop.run_in_executor(None, self.start_ws)
+        await loop.run_in_executor(None, self.start_ws)
 
         try:
             await asyncio.wait_for(self._ws.connect(), timeout=10.0)
