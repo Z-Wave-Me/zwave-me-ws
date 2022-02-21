@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Union
 
-FIELDS = ["id", "deviceType", "probeType", "locationName"]
+FIELDS = ["id", "deviceType", "probeType", "locationName", "manufacturer", "firmware"]
 METRICS_SCALE = ["title", "level", "scaleTitle", "min", "max", "color",
                  "isFailed"]
 
@@ -19,7 +19,8 @@ class ZWaveMeData:
     color: dict = field(default_factory=dict)
     isFailed: bool = False
     locationName: str = ""
-
+    manufacturer: str = ""
+    firmware: str = ""
 
 def prepare_devices(devices: list) -> list:
     prepared_devices = []
