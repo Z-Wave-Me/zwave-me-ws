@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Union
 
-FIELDS = ["id", "deviceType", "probeType", "locationName", "manufacturer", "firmware"]
+FIELDS = ["id", "deviceType", "probeType", "locationName", "manufacturer",
+          "firmware"]
 METRICS_SCALE = ["title", "level", "scaleTitle", "min", "max", "color",
                  "isFailed"]
 
@@ -22,6 +23,7 @@ class ZWaveMeData:
     manufacturer: str = ""
     firmware: str = ""
 
+
 def prepare_devices(devices: list) -> list:
     prepared_devices = []
     for device in devices:
@@ -33,5 +35,7 @@ def prepare_devices(devices: list) -> list:
                 if key in device["metrics"]
             },
         }
+        if prepared_device["probeType"] == "siren":
+            prepared_device["deviceType"] = "siren"
         prepared_devices.append(prepared_device)
     return [ZWaveMeData(**d) for d in prepared_devices]
