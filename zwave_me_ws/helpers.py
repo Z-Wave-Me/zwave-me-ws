@@ -37,5 +37,7 @@ def prepare_devices(devices: list) -> list:
         }
         if prepared_device["probeType"] == "siren":
             prepared_device["deviceType"] = "siren"
+        elif prepared_device["probeType"] == "motor":
+            prepared_device["deviceType"] = "motor"
         prepared_devices.append(prepared_device)
     return [ZWaveMeData(**d) for d in prepared_devices]
