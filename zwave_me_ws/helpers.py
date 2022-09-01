@@ -1,10 +1,17 @@
 from dataclasses import dataclass, field
 from typing import Union
 
-FIELDS = ["id", "deviceType", "probeType", "locationName", "manufacturer",
-          "firmware"]
-METRICS_SCALE = ["title", "level", "scaleTitle", "min", "max", "color",
-                 "isFailed"]
+FIELDS = [
+    "id",
+    "deviceType",
+    "probeType",
+    "locationName",
+    "manufacturer",
+    "firmware",
+    "tags",
+]
+METRICS_SCALE = ["title", "level", "scaleTitle", "min", "max", "color", "isFailed"]
+TYPE_LIGHT = "type-light"
 
 
 @dataclass
@@ -22,9 +29,10 @@ class ZWaveMeData:
     locationName: str = ""
     manufacturer: str = ""
     firmware: str = ""
+    tags: list[str] = field(default_factory=list)
 
 
-def prepare_devices(devices: list) -> list:
+def prepare_devices(devices: list[dict]) -> list[ZWaveMeData]:
     prepared_devices = []
     for device in devices:
         prepared_device = {
@@ -41,5 +49,7 @@ def prepare_devices(devices: list) -> list:
             prepared_device["deviceType"] = "motor"
         elif prepared_device["probeType"] == "fan":
             prepared_device["deviceType"] = "fan"
+        if TYPE_LIGHT in prepared_device["tags"]:
+            prepared_device["deviceType"] = "light"
         prepared_devices.append(prepared_device)
     return [ZWaveMeData(**d) for d in prepared_devices]

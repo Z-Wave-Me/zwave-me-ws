@@ -46,13 +46,14 @@ class WebsocketListener(threading.Thread, websocket.WebSocketApp):
                 {
                     "event": "httpEncapsulatedRequest",
                     "responseEvent": "get_devices",
-                    "data": {"method": "GET", "url": "/ZAutomation/api/v1/devices"}
+                    "data": {"method": "GET", "url": "/ZAutomation/api/v1/devices"},
                 }
             )
         )
 
     def run_forever(
-        self, sockopt=None, sslopt=None, ping_interval=0, ping_timeout=None, **kwargs):
+        self, sockopt=None, sslopt=None, ping_interval=0, ping_timeout=None, **kwargs
+    ):
         websocket.WebSocketApp.run_forever(
             self,
             sockopt=sockopt,

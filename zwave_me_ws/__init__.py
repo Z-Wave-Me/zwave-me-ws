@@ -1,3 +1,3 @@
-__version__ = '0.2.4'
-from .ZWaveMe import ZWaveMe
+__version__ = "0.2.5"
 from .helpers import ZWaveMeData
+from .ZWaveMe import ZWaveMe

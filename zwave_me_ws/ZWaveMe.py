@@ -1,17 +1,24 @@
 import asyncio
 import json
 import threading
-
-from .WebsocketListener import WebsocketListener
-from .helpers import prepare_devices
 import time
+
+from .helpers import prepare_devices
+from .WebsocketListener import WebsocketListener
 
 
 class ZWaveMe:
     """Main controller class"""
 
-    def __init__(self, url, token=None, on_device_create=None,
-                 on_device_update=None, on_new_device=None, platforms=None):
+    def __init__(
+        self,
+        url,
+        token=None,
+        on_device_create=None,
+        on_device_update=None,
+        on_new_device=None,
+        platforms=None,
+    ):
         self.on_device_create = on_device_create
         self.on_device_update = on_device_update
         self.on_new_device = on_new_device
@@ -52,8 +59,10 @@ class ZWaveMe:
     async def close_ws(self):
         loop = asyncio.get_event_loop()
         self.is_closed = True
-        blocking_tasks = [loop.run_in_executor(None, self.thread.join),
-                          loop.run_in_executor(None, self._ws.close)]
+        blocking_tasks = [
+            loop.run_in_executor(None, self.thread.join),
+            loop.run_in_executor(None, self._ws.close),
+        ]
         await asyncio.wait(blocking_tasks)
 
     async def get_uuid(self):
@@ -75,8 +84,8 @@ class ZWaveMe:
                         "method": "GET",
                         "url": "/ZAutomation/api/v1/devices/{}/command/{}".format(
                             device_id, command
-                        )
-                    }
+                        ),
+                    },
                 }
             )
         )
@@ -87,7 +96,7 @@ class ZWaveMe:
                 {
                     "event": "httpEncapsulatedRequest",
                     "responseEvent": "get_devices",
-                    "data": {"method": "GET", "url": "/ZAutomation/api/v1/devices"}
+                    "data": {"method": "GET", "url": "/ZAutomation/api/v1/devices"},
                 }
             )
         )
@@ -100,10 +109,8 @@ class ZWaveMe:
                     "responseEvent": "get_device_info",
                     "data": {
                         "method": "GET",
-                        "url": "/ZAutomation/api/v1/devices/{}".format(
-                            device_id
-                        )
-                    }
+                        "url": "/ZAutomation/api/v1/devices/{}".format(device_id),
+                    },
                 }
             )
         )
@@ -114,7 +121,10 @@ class ZWaveMe:
                 {
                     "event": "httpEncapsulatedRequest",
                     "responseEvent": "get_info",
-                    "data": {"method": "GET", "url": "/ZAutomation/api/v1/system/first-access"}
+                    "data": {
+                        "method": "GET",
+                        "url": "/ZAutomation/api/v1/system/first-access",
+                    },
                 }
             )
         )
@@ -160,24 +170,33 @@ class ZWaveMe:
                     if "data" not in dict_data or "body" not in dict_data["data"]:
                         return
                     body = json.loads(dict_data["data"]["body"])
-                    if "id" in body['data']:
-                        new_device = prepare_devices([body['data'], ])[0]
+                    if "id" in body["data"]:
+                        new_device = prepare_devices(
+                            [
+                                body["data"],
+                            ]
+                        )[0]
                         self.on_new_device(new_device)
                 elif dict_data["type"] == "me.z-wave.devices.level":
-                    device = prepare_devices([dict_data['data'], ])[0]
+                    device = prepare_devices(
+                        [
+                            dict_data["data"],
+                        ]
+                    )[0]
                     if device.deviceType == "sensorMultilevel":
-                        device.level = str(round(
-                            float(dict_data['data']["metrics"]["level"]), 1))
+                        device.level = str(
+                            round(float(dict_data["data"]["metrics"]["level"]), 1)
+                        )
 
                     self.on_device_update(device)
 
                 elif dict_data["type"] == "me.z-wave.namespaces.update":
-                    for data in dict_data['data']:
-                        if data['id'] == 'devices_all':
-                            new_devices = [x['deviceId'] for x in
-                                           data['params']]
+                    for data in dict_data["data"]:
+                        if data["id"] == "devices_all":
+                            new_devices = [x["deviceId"] for x in data["params"]]
                             devices_to_install = set(new_devices) - set(
-                                [x['id'] for x in self.devices])
+                                [x["id"] for x in self.devices]
+                            )
                             for device in devices_to_install:
                                 self.get_device_info(device)
                 elif dict_data["type"] == "get_info":
