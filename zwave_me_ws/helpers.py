@@ -50,6 +50,6 @@ def prepare_devices(devices: list[dict]) -> list[ZWaveMeData]:
         elif prepared_device["probeType"] == "fan":
             prepared_device["deviceType"] = "fan"
         if TYPE_LIGHT in prepared_device["tags"]:
-            prepared_device["deviceType"] = "light"
+            prepared_device["deviceType"] = "switchRGB"
         prepared_devices.append(prepared_device)
     return [ZWaveMeData(**d) for d in prepared_devices]
