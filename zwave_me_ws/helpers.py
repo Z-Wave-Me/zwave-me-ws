@@ -45,11 +45,21 @@ def prepare_devices(devices: list[dict]) -> list[ZWaveMeData]:
         }
         if prepared_device["probeType"] == "siren":
             prepared_device["deviceType"] = "siren"
+        elif TYPE_LIGHT in prepared_device["tags"] and prepared_device[
+            "deviceType"
+        ] not in ["switchRGB", "switchRGBW"]:
+            prepared_device["deviceType"] = "lightMultilevel"
+            prepared_device["color"] = {
+                "r": round(2.55 * float(prepared_device["level"])),
+                "g": round(2.55 * float(prepared_device["level"])),
+                "b": round(2.55 * float(prepared_device["level"])),
+            }
+            prepared_device["level"] = (
+                "on" if float(prepared_device["level"]) > 0 else "off"
+            )
         elif prepared_device["probeType"] == "motor":
             prepared_device["deviceType"] = "motor"
         elif prepared_device["probeType"] == "fan":
             prepared_device["deviceType"] = "fan"
-        if TYPE_LIGHT in prepared_device["tags"]:
-            prepared_device["deviceType"] = "switchRGB"
         prepared_devices.append(prepared_device)
     return [ZWaveMeData(**d) for d in prepared_devices]
