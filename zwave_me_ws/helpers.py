@@ -33,7 +33,8 @@ class ZWaveMeData:
     manufacturer: str = ""
     firmware: str = ""
     tags: list[str] = field(default_factory=list)
-
+    nodeId: str = ""
+    creatorId: str = ""
 
 def prepare_devices(devices: list[dict]) -> list[ZWaveMeData]:
     prepared_devices = []
@@ -47,7 +48,7 @@ def prepare_devices(devices: list[dict]) -> list[ZWaveMeData]:
             },
         }
         prepared_device = set_device_type(prepared_device)
-        if "nodeId" in prepared_device:
+        if "creatorId" in prepared_device and "nodeId" in prepared_device:
             prepared_device[
                 "deviceIdentifier"] = f"{prepared_device['creatorId']}_{prepared_device['nodeId']}"
         else:

@@ -165,7 +165,8 @@ class ZWaveMe:
                             for device in body["data"]["devices"]
                             if device["deviceType"] in self.platforms
                         ]
-                        self.on_device_create(prepare_devices(self.devices))
+                        if self.on_device_create:
+                            self.on_device_create(prepare_devices(self.devices))
                 elif dict_data["type"] == "get_device_info":
                     if "data" not in dict_data or "body" not in dict_data["data"]:
                         return
@@ -176,7 +177,8 @@ class ZWaveMe:
                                 body["data"],
                             ]
                         )[0]
-                        self.on_new_device(new_device)
+                        if self.on_new_device:
+                            self.on_new_device(new_device)
                 elif dict_data["type"] == "me.z-wave.devices.level":
                     device = prepare_devices(
                         [
@@ -187,8 +189,8 @@ class ZWaveMe:
                         device.level = str(
                             round(float(dict_data["data"]["metrics"]["level"]), 1)
                         )
-
-                    self.on_device_update(device)
+                    if self.on_device_update:
+                        self.on_device_update(device)
 
                 elif dict_data["type"] == "me.z-wave.namespaces.update":
                     for data in dict_data["data"]:
