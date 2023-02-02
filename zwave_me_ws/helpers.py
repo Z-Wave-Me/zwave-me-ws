@@ -10,7 +10,7 @@ FIELDS = [
     "firmware",
     "tags",
     "creatorId",
-    "nodeId"
+    "nodeId",
 ]
 METRICS_SCALE = ["title", "level", "scaleTitle", "min", "max", "color", "isFailed"]
 TYPE_LIGHT = "type-light"
@@ -36,8 +36,10 @@ class ZWaveMeData:
     nodeId: str = ""
     creatorId: str = ""
 
+
 def prepare_devices(devices: list[dict]) -> list[ZWaveMeData]:
     prepared_devices = []
+
     for device in devices:
         prepared_device = {
             **{key: device[key] for key in FIELDS if key in device},
@@ -48,12 +50,18 @@ def prepare_devices(devices: list[dict]) -> list[ZWaveMeData]:
             },
         }
         prepared_device = set_device_type(prepared_device)
+        if prepared_device["deviceType"] == "motor":
+            prepared_device["level"] = float(level)
+
         if "creatorId" in prepared_device and "nodeId" in prepared_device:
             prepared_device[
-                "deviceIdentifier"] = f"{prepared_device['creatorId']}_{prepared_device['nodeId']}"
+                "deviceIdentifier"
+            ] = f"{prepared_device['creatorId']}_{prepared_device['nodeId']}"
         else:
             prepared_device["deviceIdentifier"] = prepared_device["id"]
+
         prepared_devices.append(prepared_device)
+
     return [ZWaveMeData(**d) for d in prepared_devices]
 
 
