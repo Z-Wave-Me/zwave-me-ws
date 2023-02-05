@@ -16,11 +16,15 @@ class ZWaveMe:
         token=None,
         on_device_create=None,
         on_device_update=None,
+        on_device_remove=None,
+        on_device_destroy=None,
         on_new_device=None,
         platforms=None,
     ):
         self.on_device_create = on_device_create
         self.on_device_update = on_device_update
+        self.on_device_remove = on_device_remove
+        self.on_device_destroy = on_device_destroy
         self.on_new_device = on_new_device
         self.url = url
         self.token = token
@@ -158,6 +162,7 @@ class ZWaveMe:
                 if dict_data["type"] == "get_devices":
                     if "data" not in dict_data or "body" not in dict_data["data"]:
                         return
+
                     body = json.loads(dict_data["data"]["body"])
                     if "devices" in body["data"]:
                         self.devices = [
@@ -167,6 +172,7 @@ class ZWaveMe:
                         ]
                         if self.on_device_create:
                             self.on_device_create(prepare_devices(self.devices))
+
                 elif dict_data["type"] == "get_device_info":
                     if "data" not in dict_data or "body" not in dict_data["data"]:
                         return
@@ -179,6 +185,7 @@ class ZWaveMe:
                         )[0]
                         if self.on_new_device:
                             self.on_new_device(new_device)
+
                 elif dict_data["type"] == "me.z-wave.devices.level":
                     device = prepare_devices(
                         [
@@ -201,10 +208,20 @@ class ZWaveMe:
                             )
                             for device in devices_to_install:
                                 self.get_device_info(device)
+
                 elif dict_data["type"] == "get_info":
                     uuid = json.loads(dict_data["data"]["body"])["data"]["uuid"]
                     if uuid and uuid is not None:
                         self.uuid = uuid
+
+                elif dict_data["type"] == "me.z-wave.devices.remove":
+                    if self.on_device_remove:
+                        self.on_device_remove(dict_data["data"])
+
+                elif dict_data["type"] == "me.z-wave.devices.destroy":
+                    if self.on_device_destroy:
+                        self.on_device_destroy(dict_data["data"])
+
             except Exception as e:
                 pass
 
