@@ -218,7 +218,7 @@ class ZWaveMe:
                     if self.on_device_remove:
                         self.on_device_remove(dict_data["data"])
 
-                elif dict_data["type"] == "me.z-wave.devices.destroy":
+                elif dict_data["type"] == "me.z-wave.devices.wipe":
                     if self.on_device_destroy:
                         self.on_device_destroy(dict_data["data"])
 
