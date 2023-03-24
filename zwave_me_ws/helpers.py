@@ -11,6 +11,7 @@ FIELDS = [
     "tags",
     "creatorId",
     "nodeId",
+    "permanently_hidden"
 ]
 METRICS_SCALE = ["title", "level", "scaleTitle", "min", "max", "color", "isFailed"]
 TYPE_LIGHT = "type-light"
@@ -49,6 +50,8 @@ def prepare_devices(devices: list[dict]) -> list[ZWaveMeData]:
                 if key in device["metrics"]
             },
         }
+        if prepared_device['permanently_hidden']:
+            continue
         prepared_device = set_device_type(prepared_device)
         if prepared_device["deviceType"] == "motor":
             if prepared_device["level"] == "off":
