@@ -51,7 +51,11 @@ def prepare_devices(devices: list[dict]) -> list[ZWaveMeData]:
         }
         prepared_device = set_device_type(prepared_device)
         if prepared_device["deviceType"] == "motor":
-            prepared_device["level"] = float(level)
+            if prepared_device["level"] == "off":
+                prepared_device["level"] = 0
+            if prepared_device["level"] == "on":
+                prepared_device["level"] = 99.0
+            prepared_device["level"] = float(prepared_device["level"])
 
         if "creatorId" in prepared_device and "nodeId" in prepared_device:
             prepared_device[
