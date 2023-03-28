@@ -165,13 +165,13 @@ class ZWaveMe:
 
                     body = json.loads(dict_data["data"]["body"])
                     if "devices" in body["data"]:
-                        self.devices = [
+                        self.devices = prepare_devices([
                             device
                             for device in body["data"]["devices"]
                             if device["deviceType"] in self.platforms
-                        ]
+                        ])
                         if self.on_device_create:
-                            self.on_device_create(prepare_devices(self.devices))
+                            self.on_device_create(self.devices)
 
                 elif dict_data["type"] == "get_device_info":
                     if "data" not in dict_data or "body" not in dict_data["data"]:
