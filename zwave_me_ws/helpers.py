@@ -97,6 +97,9 @@ def set_device_type(prepared_device):
         prepared_device["deviceType"] = "motor"
     elif prepared_device["probeType"] == "fan":
         prepared_device["deviceType"] = "fan"
+    elif prepared_device['deviceType'] == 'sensorMultilevel':
+        prepared_device['deviceType'] = 'lightMultilivel'
+        prepared_device = set_light_level(prepared_device)
     return prepared_device
 
 
@@ -109,41 +112,7 @@ def set_value_by_device_type(prepared_device) -> dict:
         else:
             prepared_device['level'] = 'on' if bool(prepared_device['level']) else 'off'
     elif prepared_device['deviceType'] == 'lightMultilevel':
-        if str(prepared_device['level']).replace('.', '', 1).isdigit():
-            prepared_device["color"] = {
-                "r": round(2.55 * float(prepared_device["level"])),
-                "g": round(2.55 * float(prepared_device["level"])),
-                "b": round(2.55 * float(prepared_device["level"])),
-            }
-            prepared_device["level"] = (
-                "on" if float(prepared_device["level"]) > 0 else "off"
-            )
-        elif prepared_device['level'] == 'on':
-            prepared_device["color"] = {
-                "r": 255,
-                "g": 255,
-                "b": 255,
-            }
-        elif prepared_device['level'] == 'off':
-            prepared_device["color"] = {
-                "r": 0,
-                "g": 0,
-                "b": 0,
-            }
-        else:
-            prepared_device['level'] = 'on' if bool(prepared_device['level']) else 'off'
-            if prepared_device['level'] == 'on':
-                prepared_device["color"] = {
-                    "r": 255,
-                    "g": 255,
-                    "b": 255,
-                }
-            elif prepared_device['level'] == 'off':
-                prepared_device["color"] = {
-                    "r": 0,
-                    "g": 0,
-                    "b": 0,
-                }
+        prepared_device = set_light_level(prepared_device)
     elif prepared_device['deviceType'] == 'toggleButton':
         return prepared_device
     elif prepared_device['deviceType'] == 'thermostat':
@@ -213,4 +182,43 @@ def set_value_by_device_type(prepared_device) -> dict:
             prepared_device['level'] = {'open': 'off', 'close': 'on'}[prepared_device['level']]
         else:
             prepared_device['level'] = 'on' if bool(prepared_device['level']) else 'off'
+    return prepared_device
+
+
+def set_light_level(prepared_device):
+    if str(prepared_device['level']).replace('.', '', 1).isdigit():
+        prepared_device["color"] = {
+            "r": round(2.55 * float(prepared_device["level"])),
+            "g": round(2.55 * float(prepared_device["level"])),
+            "b": round(2.55 * float(prepared_device["level"])),
+        }
+        prepared_device["level"] = (
+            "on" if float(prepared_device["level"]) > 0 else "off"
+        )
+    elif prepared_device['level'] == 'on':
+        prepared_device["color"] = {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+        }
+    elif prepared_device['level'] == 'off':
+        prepared_device["color"] = {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+        }
+    else:
+        prepared_device['level'] = 'on' if bool(prepared_device['level']) else 'off'
+        if prepared_device['level'] == 'on':
+            prepared_device["color"] = {
+                "r": 255,
+                "g": 255,
+                "b": 255,
+            }
+        elif prepared_device['level'] == 'off':
+            prepared_device["color"] = {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+            }
     return prepared_device
