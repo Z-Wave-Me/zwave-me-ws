@@ -92,6 +92,7 @@ def set_device_type(prepared_device):
             if tag in TYPE_TAGS:
                 prepared_device["deviceType"] = TYPE_TAGS[tag]
                 prepared_device = set_value_by_device_type(prepared_device)
+                return prepared_device
     if prepared_device["probeType"] == "motor":
         prepared_device["deviceType"] = "motor"
     elif prepared_device["probeType"] == "fan":
