@@ -98,8 +98,9 @@ def set_device_type(prepared_device):
     elif prepared_device["probeType"] == "fan":
         prepared_device["deviceType"] = "fan"
     elif prepared_device['deviceType'] == 'sensorMultilevel':
-        prepared_device['deviceType'] = 'lightMultilivel'
-        prepared_device = set_light_level(prepared_device)
+        if prepared_device["probeType"] == "light":
+            prepared_device['deviceType'] = 'lightMultilevel'
+            prepared_device = set_light_level(prepared_device)
     return prepared_device
 
 
