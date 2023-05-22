@@ -101,6 +101,13 @@ def set_device_type(prepared_device):
         if prepared_device["probeType"] == "light":
             prepared_device['deviceType'] = 'lightMultilevel'
             prepared_device = set_light_level(prepared_device)
+    elif prepared_device['deviceType'] == 'switchMultilevel':
+        prepared_device['deviceType'] = 'lightMultilevel'
+        prepared_device = set_light_level(prepared_device)
+    elif 'alarm' in prepared_device["probeType"]:
+        prepared_device["deviceType"] = "sensorBinary"
+        prepared_device = set_value_by_device_type(prepared_device)
+
     return prepared_device
 
 
