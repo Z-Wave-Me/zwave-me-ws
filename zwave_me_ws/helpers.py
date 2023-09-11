@@ -70,6 +70,8 @@ def prepare_devices(devices: list[dict]) -> list[ZWaveMeData]:
                 prepared_device["level"] = 0
             if prepared_device["level"] == "on":
                 prepared_device["level"] = 99.0
+            if prepared_device["level"] is None:
+                prepared_device["level"] = 0
             prepared_device["level"] = float(prepared_device["level"])
 
         if "creatorId" in prepared_device and "nodeId" in prepared_device:
@@ -138,6 +140,8 @@ def set_value_by_device_type(prepared_device) -> dict:
         elif prepared_device['level'] == 'on':
             prepared_device['level'] = 99
         elif prepared_device['level'] == 'off':
+            prepared_device['level'] = 0
+        elif prepared_device['level'] is None:
             prepared_device['level'] = 0
         else:
             prepared_device['level'] = 99 if bool(prepared_device['level']) else 0
